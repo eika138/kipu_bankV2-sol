@@ -22,9 +22,8 @@ import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.so
 contract KipuBankV2 is AccessControl, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                    CONSTANTS
-    ═══════════════════════════════════════════════════════════════════════════*/
+// CONSTANTS
+ 
 
     /// @notice Rol de administrador con permisos completos
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
@@ -41,9 +40,7 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
     /// @notice Decimales del precio de Chainlink (8 decimales)
     uint8 private constant CHAINLINK_DECIMALS = 8;
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                CUSTOM ERRORS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*  CUSTOM ERRORS*/
 
     error KipuBank__AmountMustBeGreaterThanZero();
     error KipuBank__DepositExceedsBankCap();
@@ -57,9 +54,7 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
     error KipuBank__StalePrice();
     error KipuBank__InvalidPrice();
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                    STRUCTS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /* STRUCTS*/
 
     /// @notice Información de un token soportado
     struct TokenInfo {
@@ -70,9 +65,9 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
         uint256 withdrawalCount;    // Total de retiros de este token
     }
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                STATE VARIABLES
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*
+              STATE VARIABLES
+    */
 
     /// @notice Límite de retiro máximo por transacción en USD (6 decimales)
     uint256 public immutable i_withdrawalThresholdUSD;
@@ -98,9 +93,7 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
     /// @notice Tolerancia de tiempo para precios de Chainlink (1 hora)
     uint256 private constant PRICE_STALENESS_THRESHOLD = 3600;
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                    EVENTS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*     EVENTS */
 
     event Deposit(
         address indexed user,
@@ -129,9 +122,9 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
     event Paused(address indexed admin);
     event Unpaused(address indexed admin);
 
-    /*═══════════════════════════════════════════════════════════════════════════
+    /*
                                     MODIFIERS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    */
 
     modifier nonZeroAmount(uint256 amount) {
         if (amount == 0) revert KipuBank__AmountMustBeGreaterThanZero();
@@ -150,9 +143,9 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
         _;
     }
 
-    /*═══════════════════════════════════════════════════════════════════════════
+    /*
                                     CONSTRUCTOR
-    ═══════════════════════════════════════════════════════════════════════════*/
+   */
 
     /**
      * @notice Inicializa KipuBank V2
@@ -177,9 +170,8 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
         _addToken(NATIVE_TOKEN, ethPriceFeed, 18);
     }
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                DEPOSIT FUNCTIONS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*  DEPOSIT FUNCTIONS
+    */
 
     /**
      * @notice Deposita ETH nativo en la bóveda del usuario
@@ -249,9 +241,8 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
         );
     }
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                WITHDRAWAL FUNCTIONS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*        WITHDRAWAL FUNCTIONS
+  */
 
     /**
      * @notice Retira ETH nativo de la bóveda del usuario
@@ -330,9 +321,8 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
         );
     }
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                ADMIN FUNCTIONS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*      ADMIN FUNCTIONS
+    */
 
     /**
      * @notice Agrega un nuevo token soportado
@@ -393,9 +383,8 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
         emit Unpaused(msg.sender);
     }
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                PRICE FUNCTIONS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*    PRICE FUNCTIONS
+ */
 
     /**
      * @notice Obtiene el precio actual de un token en USD desde Chainlink
@@ -467,9 +456,7 @@ contract KipuBankV2 is AccessControl, ReentrancyGuard {
         }
     }
 
-    /*═══════════════════════════════════════════════════════════════════════════
-                                VIEW FUNCTIONS
-    ═══════════════════════════════════════════════════════════════════════════*/
+    /*   VIEW FUNCTIONS*/
 
     /**
      * @notice Obtiene el balance normalizado de un usuario para un token
